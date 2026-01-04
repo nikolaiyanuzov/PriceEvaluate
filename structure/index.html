@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site for my friend</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Price Evaluate</title>
 </head>
 <body>
-    <button onclick="main()"></button>
-    <script src="../code/main.js"></script>
+  <button id="fetchBtn">Fetch Products</button>
+  <pre id="output"></pre>
+
+  <script src="/code/main.js"></script>
+  <script>
+    document.getElementById('fetchBtn').addEventListener('click', () => {
+      if (typeof main === 'function') main();
+    });
+    // Optional: hook to display console output in the page
+    (function(){
+      const out = document.getElementById('output');
+      const orig = console.log;
+      console.log = function(...args){
+        orig.apply(console, args);
+        out.textContent += args.map(a => (typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a))).join(' ') + '\n';
+      };
+    })();
+  </script>
 </body>
 </html>

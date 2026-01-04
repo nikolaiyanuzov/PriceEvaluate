@@ -1,15 +1,15 @@
-const API_URL = 'https://your-render-url.onrender.com/api/products';
-
 async function GetProduct() {
-    try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error("Error:", error);
-    }
+  try {
+    // Use relative path so same-origin works whether local or deployed
+    const response = await fetch('/api/products');
+    const data = await response.json();
+    console.log(data);
+    // TODO: render results into the page
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
 async function main(){
-    await GetProduct();
+  await GetProduct();
 }
