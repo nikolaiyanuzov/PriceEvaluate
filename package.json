@@ -1,0 +1,11 @@
+{
+  "name": "price-evaluate",
+  "version": "1.0.0",
+  "main": "code/server.js",
+  "scripts": {
+    "start": "node code/server.js"
+  },
+  "engines": {
+    "node": "18"
+  }
+}
