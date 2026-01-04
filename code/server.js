@@ -2,6 +2,7 @@ const http = require('http');
 const url = require('url');
 
 const API_KEY = "pricesapi_F7wh32vHQzY51QPNmCUq9zIMDirAiqs";
+const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(async (req, res) => {
     // Enable CORS
@@ -25,6 +26,6 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(3000, () => {
-    console.log('Server running at http://localhost:3000');
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
