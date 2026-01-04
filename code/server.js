@@ -33,26 +33,32 @@ const server = http.createServer(async (req, res) => {
   const url = req.url;
 
   // API route
-  if (url === '/api/products' && req.method === 'GET') {
-    try {
-      const apiUrl = `https://api.pricesapi.io/api/v1/products/search?q=laptop&limit=10&api_key=${API_KEY}`;
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(data));
-    } catch (error) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: error.message }));
-    }
-    return;
-  }
+  if (url.startsWith('/api/products') && req.method === 'GET') {
+  try {
+    // Parse query string safely (need a base for the URL constructor)
+    const parsed = new URL(req.url, `http://${req.headers.host}`);
+    const qParam = (parsed.searchParams.get('q') || '').trim();
 
-  // Serve index at root
-  if (url === '/' || url === '/index.html') {
-    const indexPath = path.join(__dirname, '..', 'structure', 'index.html');
-    sendFile(res, indexPath, 'text/html');
-    return;
+    if (!qParam) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Missing query parameter: q' }));
+      return;
+    }
+
+    // Basic sanitization / limit length
+    const qSafe = qParam.slice(0, 100);
+    const apiUrl = `https://api.pricesapi.io/api/v1/products/search?q=${encodeURIComponent(qSafe)}&limit=10&api_key=${API_KEY}`;
+
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(data));
+  } catch (error) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: error.message }));
   }
+  return;
+}
 
   // Serve static files under /assets, /code, /structure
   // Map incoming path directly to repo folder (security: simple, for demo)
